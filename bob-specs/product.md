@@ -1,7 +1,7 @@
 # product.md — API Contract Drift & Auto-Healing Integration Agent
 
 ## Project Name
-AegisContractGuard (working title — may change at submission)
+AegisContractGuard
 
 ## Problem Statement
 When an enterprise backend changes its API contract (field rename, type change, new required
