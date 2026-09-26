@@ -38,6 +38,6 @@ re-verify until the test passes. Not just a passive linter/notifier.
 
 ## Core Demo Scenario
 The FastAPI backend bumps version (v1 → v2) with two breaking changes at once on a single endpoint,
-`/api/users/{id}`. The TypeScript client, still on the v1 contract, fails. Bob detects it,
+`/users/{user_id}`. The TypeScript client, still on the v1 contract, fails. Bob detects it,
 reproduces the failure via a test, writes the patch, then re-verifies — all recorded as one
 continuous take.
