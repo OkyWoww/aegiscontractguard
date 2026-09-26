@@ -43,7 +43,7 @@ Monitor remaining coins in Bob IDE → Settings → General after each stage, no
   Alpha (the two tasks are independent — explicitly verify they can genuinely run at the same time
   without waiting on each other; this is concrete proof of Parallel Tasks usage for the submission).
 - Implement a simple fan-in/merge step combining Alpha's and the Baseline Test Runner's output.
-- Implement Beta: only starts after the fan-in is done, composes the official `failing_test.ts` with
+- Implement Beta: only starts after the fan-in is done, composes the official `failing.test.ts` with
   specific per-breaking-change assertions (not a generic fetch error), runs it via the `wait-on` +
   Vitest gate, confirms it truly FAILS with a clear message.
 - Checkpoint at hour 14: proof that Alpha + Baseline Test Runner ran in parallel (timestamps/logs
@@ -58,7 +58,8 @@ Monitor remaining coins in Bob IDE → Settings → General after each stage, no
   the 3rd iteration still fails.
 - Test the revision loop: patch → re-run test → if still failing, revise again → repeat until PASS
   (or until the 3-iteration limit is hit — also verify the rollback path works).
-- Confirm previously-passing tests don't regress after Gamma's patch.
+- Confirm `failing.test.ts` reaches GREEN. `client.test.ts` is expected to remain RED — that's
+  correct, not a regression (see skill.md's note on Gamma).
 - Add the automatic `git diff --color` call once tests go green.
 - Checkpoint at hour 30: the Detect→Reproduce→Patch→Pass loop validated end-to-end at least once in
   full, including clean `git diff --color` output ready to record.

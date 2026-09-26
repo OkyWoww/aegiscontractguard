@@ -35,7 +35,7 @@ official, runnable piece of evidence that's easy for a non-technical audience to
 only starts work **after** both parallel tasks finish (the single synchronization point in the
 diagnostic stage).
 **Required capabilities**: reconciling Alpha's static findings with the raw runtime error, then
-writing the official `failing_test.ts` with specific per-breaking-change assertions (e.g.: assert
+writing the official `failing.test.ts` with specific per-breaking-change assertions (e.g.: assert
 `account_id` is a string, assert the `x-api-version` header is sent) — not just a generic fetch
 error. Running that test (Vitest) via the gate `wait-on http://127.0.0.1:8000/docs && vitest run` to
 confirm it truly FAILS with a clear message.
@@ -49,15 +49,23 @@ confirmed from both parallel sources.
 **Input**: Alpha's report + Beta's failing test.
 **Required capabilities**: revising the client's interface/types and calling logic to match the new
 spec, re-triggering test execution via the terminal execution task, repeating the revision cycle
-until the full test suite (old + new) passes — **capped at 3 iterations**. If the 3rd iteration still
-fails, must roll back (`git checkout -- client/src/`) to the clean state from before the loop
-started, and produce a structured diagnostic summary file, `remediation_failure.log` (not an
-unbounded retry or a generic "diagnostic log"). Once tests pass, run `git diff --color` in the
-terminal as visual before/after proof.
-**Output**: updated client code + proof of a PASSing test run + `git diff --color` output.
+until `failing.test.ts` (the new v2-contract test) passes — **capped at 3 iterations**. If the 3rd
+iteration still fails, must roll back (`git checkout -- client/src/`) to the clean state from before
+the loop started, and produce a structured diagnostic summary file, `remediation_failure.log` (not
+an unbounded retry or a generic "diagnostic log"). Once `failing.test.ts` passes, run
+`git diff --color` in the terminal as visual before/after proof.
+
+**Note on `client.test.ts` (the old v1 baseline test)**: for a hard breaking change that removes a
+field entirely (e.g. `id` → `account_id`), `client.test.ts`'s v1 assertions and the real v2 response
+shape are mutually exclusive — no client patch can satisfy both without editing the test, which is
+forbidden. `client.test.ts` is therefore expected to remain **permanently RED** after the patch, by
+design — it stands as documented "before" evidence of the breaking change, not a regression. Gamma's
+success gate is `failing.test.ts` passing, not the full suite going green; do not treat
+`client.test.ts` staying red as a failure to fix.
+**Output**: updated client code + proof of `failing.test.ts` PASSing + `git diff --color` output.
 **Constraints**: does not touch backend code; does not auto-commit/push to the main branch (see
 security.md — human-in-the-loop by design for a production version). **Strictly forbidden from
-editing or weakening `failing_test.ts`** (changing/removing assertions) to make the test pass
+editing or weakening `failing.test.ts`** (changing/removing assertions) to make the test pass
 artificially — the fix must be made purely on the client's implementation and types, never on the
 test side.
 

@@ -34,7 +34,10 @@ re-verify until the test passes. Not just a passive linter/notifier.
   against an estimated manual fix time.
 - Number of breaking changes handled automatically without manual intervention (target: 2 of 2
   chosen scenarios — see design.md).
-- No regressions: previously-passing tests still pass after the patch is applied.
+- No regressions on unrelated functionality: any client behavior not tied to this breaking change
+  keeps working after the patch. (`client.test.ts`, the old v1 baseline test, is expected to stay
+  red after the patch — it directly asserts the removed v1 field, so it fails because of the
+  breaking change itself, not because of a Gamma-introduced regression. See skill.md.)
 
 ## Core Demo Scenario
 The FastAPI backend bumps version (v1 → v2) with two breaking changes at once on a single endpoint,

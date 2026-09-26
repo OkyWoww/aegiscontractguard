@@ -14,10 +14,10 @@
   ```json
   "scripts": {
     "test": "wait-on http://127.0.0.1:8000/docs && vitest run",
-    "test:baseline": "wait-on http://127.0.0.1:8000/docs && vitest run tests/baseline.test.ts"
+    "test:baseline": "wait-on http://127.0.0.1:8000/docs && vitest run tests/client.test.ts"
   }
   ```
-  `test` runs the full suite (baseline + failing_test.ts, used by Gamma's full verification).
+  `test` runs the full suite (baseline + failing.test.ts, used by Gamma's full verification).
   `test:baseline` runs only the old v1 test (used by the Baseline Test Runner task, in parallel with
   Alpha). Both packages must be recorded as `devDependencies`:
   `npm install -D wait-on vitest`.
@@ -40,8 +40,8 @@ aegis-contract-guard/
 │   │   ├── userClient.ts          # Gamma's patch target — implementation only
 │   │   └── userTypes.ts           # Gamma's patch target — implementation only
 │   └── tests/                    # all test files live here, separate from src/
-│       ├── baseline.test.ts      # existing v1 test — used by test:baseline (Baseline Test Runner)
-│       └── failing_test.ts       # written by Beta — off-limits to Gamma (see rule.md)
+│       ├── client.test.ts      # existing v1 test — used by test:baseline (Baseline Test Runner)
+│       └── failing.test.ts       # written by Beta — off-limits to Gamma (see rule.md)
 ├── bob-specs/                # these spec files (product/design/tech/security/skill/rule/tasks.md)
 └── demo/                     # recording script, before/after screenshots, time metrics
 ```
