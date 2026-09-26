@@ -1,0 +1,7 @@
+{
+  "name": "AegisContractGuard",
+  "description": "Closed-loop auto-healing API contract drift boilerplate & visual workbench for FastAPI and TypeScript client",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

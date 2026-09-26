@@ -1,0 +1,253 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AegisContractGuard API - State v2 (Breaking Changes)",
+    "description": "State v2 API introducing contract drift (account_id string and required x-api-version header).",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/users/{user_id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user by ID (v2)",
+        "description": "Retrieve user record by user_id.\nBreaking Change 1: Returns 'account_id' (str) instead of 'id' (int).\nBreaking Change 2: Requires header 'x-api-version: 2.0' (HTTP 400 if omitted).",
+        "operationId": "get_user_by_id_users__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "x-api-version",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "2.0"
+              ],
+              "default": "2.0"
+            },
+            "description": "Mandatory API version header (must be exactly '2.0')"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserV2"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create user (v2)",
+        "description": "Create user under v2 contract.\nReturns 'account_id' string identifier.\nRequires 'x-api-version: 2.0' header.",
+        "operationId": "create_user_users_post",
+        "parameters": [
+          {
+            "name": "x-api-version",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "2.0"
+              ],
+              "default": "2.0"
+            },
+            "description": "Mandatory API version header (must be exactly '2.0')"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreateV2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserV2"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "UserCreateV2": {
+        "properties": {
+          "user_name": {
+            "type": "string",
+            "title": "User Name",
+            "description": "Username",
+            "example": "johndoe"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email",
+            "description": "Email address",
+            "example": "john@example.com"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Account status",
+            "default": "active",
+            "example": "active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_name",
+          "email"
+        ],
+        "title": "UserCreateV2",
+        "description": "Payload for creating a new user under v2 contract."
+      },
+      "UserV2": {
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "title": "Account Id",
+            "description": "Alphanumeric UUID-like account identifier",
+            "example": "acc_101"
+          },
+          "user_name": {
+            "type": "string",
+            "title": "User Name",
+            "description": "Unique handle or username",
+            "example": "johndoe"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email",
+            "description": "Primary email address",
+            "example": "john@example.com"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Account active/pending status",
+            "default": "active",
+            "example": "active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "account_id",
+          "user_name",
+          "email"
+        ],
+        "title": "UserV2",
+        "description": "Evolved User schema for State v2 with BREAKING CHANGES:\n1. 'id' (integer) -> 'account_id' (string UUID-like formatted as 'acc_<id>')",
+        "example": {
+          "account_id": "acc_101",
+          "email": "john@example.com",
+          "status": "active",
+          "user_name": "johndoe"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
