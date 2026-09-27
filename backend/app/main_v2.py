@@ -7,7 +7,7 @@ Implements GET /users/{user_id} and POST /users incorporating two deliberate bre
 
 from typing import Dict, Optional
 from fastapi import FastAPI, HTTPException, Header, status
-from backend.app.models import UserV2, UserCreateV2
+from app.models import UserV2, UserCreateV2
 
 app = FastAPI(
     title="AegisContractGuard API - State v2 (Breaking Changes)",
